@@ -39,9 +39,7 @@ _Feature-rich dashboard for message composition and management_
 
 _Complete workflow demonstration from OAuth connection to message scheduling_
 
-</div>
-
----
+## </div>
 
 ## 📋 Prerequisites
 
