@@ -37,23 +37,14 @@ _Feature-rich dashboard for message composition and management_
 
 <p align="center">
   <a href="https://youtu.be/B4d1fZqNpOA" target="_blank">
-    <img src="https://img.youtube.com/vi/B4d1fZqNpOA/maxresdefault.jpg" 
-         alt="Slack Connect Demo" 
-         width="600" 
-         style="border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+    <img src="https://img.youtube.com/vi/B4d1fZqNpOA/hqdefault.jpg" 
+         alt="Slack Connect Demo" width="600">
   </a>
 </p>
 
 <p align="center">
-  <a href="https://youtu.be/B4d1fZqNpOA" target="_blank" 
-     style="text-decoration: none; display: inline-flex; align-items: center; 
-            background-color: #FF0000; color: white; padding: 10px 18px; 
-            border-radius: 6px; font-weight: bold; font-family: Arial, sans-serif;">
-    <img src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/youtube.svg" 
-         width="20" height="20" 
-         alt="YouTube" 
-         style="margin-right: 8px; filter: invert(1);">
-    Watch Demo on YouTube
+  <a href="https://youtu.be/B4d1fZqNpOA" target="_blank">
+    <img src="https://img.shields.io/badge/Watch%20Demo%20on%20YouTube-FF0000?style=for-the-badge&logo=youtube&logoColor=white" alt="Watch on YouTube">
   </a>
 </p>
 
