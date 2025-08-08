@@ -13,6 +13,37 @@ A comprehensive Slack integration application that enables users to connect thei
 - **Real-time Updates**: Automatic background processing of scheduled messages
 - **Responsive UI**: Modern, user-friendly interface built with React and Tailwind CSS
 
+## 📸 Preview
+
+### Application Screenshots
+
+<div align="center">
+
+#### Homepage
+
+<img src="preview_images/homepage.png" alt="Slack Connect Homepage" width="800"/>
+
+_Clean and intuitive landing page with OAuth integration_
+
+#### Dashboard
+
+<img src="preview_images/dashboard.png" alt="Slack Connect Dashboard" width="800"/>
+
+_Feature-rich dashboard for message composition and management_
+
+#### Application Demo
+
+<video width="800" controls>
+  <source src="preview_images/simulation.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
+
+_Complete workflow demonstration from OAuth connection to message scheduling_
+
+</div>
+
+---
+
 ## 📋 Prerequisites
 
 Before running this application, ensure you have:
