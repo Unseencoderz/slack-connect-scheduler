@@ -1,0 +1,26 @@
+{
+  "name": "slack-connect",
+  "version": "1.0.0",
+  "description": "A Slack Connect application for OAuth integration and message scheduling",
+  "main": "server/dist/index.js",
+  "scripts": {
+    "dev": "concurrently \"npm run server:dev\" \"npm run client:dev\"",
+    "server:dev": "cd server && npm run dev",
+    "client:dev": "cd client && npm run dev",
+    "build": "npm run server:build && npm run client:build",
+    "server:build": "cd server && npm run build",
+    "client:build": "cd client && npm run build",
+    "start": "npm run server:start",
+    "server:start": "cd server && npm start",
+    "install:all": "npm install && cd server && npm install && cd ../client && npm install",
+    "test": "npm run server:test && npm run client:test",
+    "server:test": "cd server && npm test",
+    "client:test": "cd client && npm test"
+  },
+  "keywords": ["slack", "oauth", "scheduling", "typescript", "react", "express"],
+  "author": "Developer",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
