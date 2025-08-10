@@ -31,6 +31,7 @@ export interface AuthState {
   workspaceId: string | null;
   teamName: string | null;
   user: User | null;
+  timestamp?: string | null; // Optional timestamp for fallback logic
 }
 
 export interface AppContextType {
@@ -40,4 +41,5 @@ export interface AppContextType {
   restoreAuth: () => Promise<AuthState>;
   verifyAuth: (workspaceId: string) => Promise<boolean>;
   getStoredAuth: () => Partial<AuthState> | null;
+  debugAuthState: () => void;
 }

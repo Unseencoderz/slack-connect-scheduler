@@ -1,6 +1,14 @@
 import axios, { AxiosInstance, AxiosResponse, AxiosError } from 'axios';
 import { SlackChannel, ScheduledMessage, User } from '../types';
 
+// Auth storage keys - keep in sync with AppContext
+const AUTH_STORAGE_KEYS = {
+  WORKSPACE_ID: 'slack_workspace_id',
+  TEAM_NAME: 'slack_team_name',
+  AUTH_TIMESTAMP: 'slack_auth_timestamp',
+  USER_DATA: 'slack_user_data'
+} as const;
+
 class ApiService {
   private api: AxiosInstance;
   private isRefreshing = false;
@@ -11,7 +19,7 @@ class ApiService {
 
   constructor() {
     this.api = axios.create({
-      baseURL: 'https://slack-connect-scheduler.onrender.com' ,
+      baseURL: 'https://slack-connect-scheduler.onrender.com',
       timeout: 10000,
       headers: {
         'Content-Type': 'application/json'
@@ -20,7 +28,7 @@ class ApiService {
 
     // Add request interceptor to include workspace ID
     this.api.interceptors.request.use((config) => {
-      const workspaceId = localStorage.getItem('slack_workspace_id');
+      const workspaceId = localStorage.getItem(AUTH_STORAGE_KEYS.WORKSPACE_ID);
       if (workspaceId) {
         config.headers['x-workspace-id'] = workspaceId;
       }
@@ -50,7 +58,7 @@ class ApiService {
           this.isRefreshing = true;
 
           try {
-            const workspaceId = localStorage.getItem('slack_workspace_id');
+            const workspaceId = localStorage.getItem(AUTH_STORAGE_KEYS.WORKSPACE_ID);
             if (!workspaceId) {
               throw new Error('No workspace ID found');
             }
@@ -81,10 +89,10 @@ class ApiService {
         // Handle network errors with retry logic
         if (this.isNetworkError(error) && !originalRequest._networkRetry) {
           originalRequest._networkRetry = true;
-          
+
           // Wait 1 second before retry
           await new Promise(resolve => setTimeout(resolve, 1000));
-          
+
           try {
             return await this.api(originalRequest);
           } catch (retryError) {
@@ -111,7 +119,7 @@ class ApiService {
         resolve(null);
       }
     });
-    
+
     this.failedQueue = [];
   }
 
@@ -127,13 +135,13 @@ class ApiService {
   private clearAuthAndRedirect(): void {
     // Clear authentication storage
     const authKeys = [
-      'slack_workspace_id',
-      'slack_team_name',
-      'slack_auth_timestamp',
-      'slack_user_data'
+      AUTH_STORAGE_KEYS.WORKSPACE_ID,
+      AUTH_STORAGE_KEYS.TEAM_NAME,
+      AUTH_STORAGE_KEYS.AUTH_TIMESTAMP,
+      AUTH_STORAGE_KEYS.USER_DATA
     ];
     authKeys.forEach(key => localStorage.removeItem(key));
-    
+
     // Redirect to login if not already there
     if (window.location.pathname !== '/') {
       window.location.href = '/';

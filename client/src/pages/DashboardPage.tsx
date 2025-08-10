@@ -2,13 +2,15 @@ import React, { useState } from 'react';
 import MessageComposer from '../components/MessageComposer';
 import ScheduledMessages from '../components/ScheduledMessages';
 import NewMessageModal from '../components/NewMessageModal';
-import { MessageSquare, Calendar, BarChart3, Plus, Clock, CheckCircle2 } from 'lucide-react';
+import { useAppContext } from '../contexts/AppContext';
+import { MessageSquare, Calendar, BarChart3, Plus, Clock, CheckCircle2, Bug } from 'lucide-react';
 
 type TabType = 'compose' | 'scheduled' | 'analytics';
 
 const DashboardPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<TabType>('compose');
   const [isNewMessageModalOpen, setIsNewMessageModalOpen] = useState(false);
+  const { debugAuthState } = useAppContext();
 
   const tabs = [
     {
@@ -116,13 +118,25 @@ const DashboardPage: React.FC = () => {
             </div>
             
             {/* Quick Action Button */}
-            <button 
-              onClick={() => setIsNewMessageModalOpen(true)}
-              className="btn-primary flex items-center space-x-2 lg:w-auto w-full justify-center group"
-            >
-              <Plus className="w-5 h-5 group-hover:scale-110 transition-transform duration-200" />
-              <span>New Message</span>
-            </button>
+            <div className="flex gap-3 lg:w-auto w-full justify-center">
+              <button 
+                onClick={() => setIsNewMessageModalOpen(true)}
+                className="btn-primary flex items-center space-x-2 group"
+              >
+                <Plus className="w-5 h-5 group-hover:scale-110 transition-transform duration-200" />
+                <span>New Message</span>
+              </button>
+              
+              {/* Debug Button - Remove in production */}
+              <button 
+                onClick={debugAuthState}
+                className="btn-secondary flex items-center space-x-2 group"
+                title="Debug Authentication State"
+              >
+                <Bug className="w-5 h-5 group-hover:scale-110 transition-transform duration-200" />
+                <span className="hidden sm:inline">Debug</span>
+              </button>
+            </div>
           </div>
         </div>
 
