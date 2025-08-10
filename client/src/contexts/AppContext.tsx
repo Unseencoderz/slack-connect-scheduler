@@ -92,7 +92,8 @@ export const AppContextProvider: React.FC<AppContextProviderProps> = ({ children
         isAuthenticated: true,
         workspaceId,
         teamName,
-        user
+        user,
+        timestamp // Include timestamp for fallback logic
       };
     } catch (error) {
       console.error('Error retrieving stored auth data:', error);
@@ -138,52 +139,91 @@ export const AppContextProvider: React.FC<AppContextProviderProps> = ({ children
     return false;
   }, []);
 
+  // Check if stored auth data is recent enough to trust without server verification
+  const isStoredAuthRecent = useCallback((timestamp: string | null): boolean => {
+    if (!timestamp) return false;
+    
+    const authAge = Date.now() - parseInt(timestamp);
+    const maxAge = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+    
+    return authAge < maxAge;
+  }, []);
+
   // Restore authentication from storage
   const restoreAuth = useCallback(async (): Promise<AuthState> => {
-    const storedAuth = getStoredAuth();
-    
-    if (!storedAuth || !storedAuth.workspaceId) {
-      return {
-        isAuthenticated: false,
-        workspaceId: null,
-        teamName: null,
-        user: null
-      };
-    }
-
-    // Verify stored auth with server
-    const isValid = await verifyAuth(storedAuth.workspaceId);
-    
-    if (isValid) {
-      // Fetch fresh user data
-      try {
-        const response = await fetch('/auth/me', {
-          headers: {
-            'x-workspace-id': storedAuth.workspaceId
-          }
-        });
-        
-        if (response.ok) {
-          const user = await response.json();
-          const restoredAuth: AuthState = {
-            isAuthenticated: true,
-            workspaceId: storedAuth.workspaceId,
-            teamName: storedAuth.teamName || '',
-            user
-          };
-          
-          // Update storage with fresh data
-          setAuth(restoredAuth);
-          return restoredAuth;
-        }
-      } catch (error) {
-        console.error('Failed to fetch fresh user data:', error);
-      }
+    try {
+      const storedAuth = getStoredAuth();
       
-      // Return stored auth even if we couldn't fetch fresh user data
-      return storedAuth as AuthState;
-    } else {
-      // Clear invalid auth
+      if (!storedAuth || !storedAuth.workspaceId) {
+        console.log('No stored authentication data found');
+        return {
+          isAuthenticated: false,
+          workspaceId: null,
+          teamName: null,
+          user: null
+        };
+      }
+
+      console.log('Found stored auth data, verifying with server...');
+
+      // Verify stored auth with server
+      const isValid = await verifyAuth(storedAuth.workspaceId);
+      
+      if (isValid) {
+        console.log('Server verification successful, fetching fresh user data...');
+        
+        // Fetch fresh user data
+        try {
+          const response = await fetch('/auth/me', {
+            headers: {
+              'x-workspace-id': storedAuth.workspaceId
+            }
+          });
+          
+          if (response.ok) {
+            const user = await response.json();
+            const restoredAuth: AuthState = {
+              isAuthenticated: true,
+              workspaceId: storedAuth.workspaceId,
+              teamName: storedAuth.teamName || '',
+              user
+            };
+            
+            console.log('Successfully restored authentication with fresh user data');
+            // Update storage with fresh data
+            setAuth(restoredAuth);
+            return restoredAuth;
+          } else {
+            console.warn('Failed to fetch fresh user data, using stored data');
+            // Return stored auth even if we couldn't fetch fresh user data
+            return storedAuth as AuthState;
+          }
+        } catch (error) {
+          console.warn('Error fetching fresh user data, using stored data:', error);
+          // Return stored auth even if we couldn't fetch fresh user data
+          return storedAuth as AuthState;
+        }
+      } else {
+        // Server verification failed, check if we can use stored data as fallback
+        const timestamp = localStorage.getItem(AUTH_STORAGE_KEYS.AUTH_TIMESTAMP);
+        if (isStoredAuthRecent(timestamp)) {
+          console.log('Server verification failed but stored data is recent, using fallback authentication');
+          return storedAuth as AuthState;
+        } else {
+          console.log('Server verification failed and stored data is too old, clearing invalid auth');
+          // Clear invalid auth
+          clearAuthStorage();
+          return {
+            isAuthenticated: false,
+            workspaceId: null,
+            teamName: null,
+            user: null
+          };
+        }
+      }
+    } catch (error) {
+      console.error('Error in restoreAuth:', error);
+      // In case of any error, clear auth and return unauthenticated state
       clearAuthStorage();
       return {
         isAuthenticated: false,
@@ -205,13 +245,27 @@ export const AppContextProvider: React.FC<AppContextProviderProps> = ({ children
     clearAuthStorage();
   }, [clearAuthStorage]);
 
+  // Debug utility to check authentication state
+  const debugAuthState = useCallback(() => {
+    const storedAuth = getStoredAuth();
+    console.log('=== Authentication Debug Info ===');
+    console.log('Current auth state:', auth);
+    console.log('Stored auth data:', storedAuth);
+    console.log('LocalStorage keys:');
+    Object.values(AUTH_STORAGE_KEYS).forEach(key => {
+      console.log(`  ${key}:`, localStorage.getItem(key));
+    });
+    console.log('===============================');
+  }, [auth, getStoredAuth]);
+
   const value: AppContextType = {
     auth,
     setAuth,
     logout,
     restoreAuth,
     verifyAuth: (workspaceId: string) => verifyAuth(workspaceId),
-    getStoredAuth
+    getStoredAuth,
+    debugAuthState
   };
 
   return (

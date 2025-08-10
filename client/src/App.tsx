@@ -31,6 +31,7 @@ const AppContent: React.FC = () => {
         }
 
         if (workspaceId && teamName) {
+          console.log('OAuth callback detected, processing authentication...');
           // OAuth success - handle new authentication
           try {
             // Try to fetch user info to verify the authentication
@@ -49,8 +50,9 @@ const AppContent: React.FC = () => {
                 user
               };
               setAuth(newAuth);
-              console.log('OAuth authentication successful');
+              console.log('OAuth authentication successful with user data');
             } else {
+              console.warn('OAuth successful but failed to fetch user info, proceeding with basic auth');
               // If user info fetch fails, still set basic auth state
               const newAuth = {
                 isAuthenticated: true,
@@ -59,7 +61,6 @@ const AppContent: React.FC = () => {
                 user: null
               };
               setAuth(newAuth);
-              console.warn('OAuth successful but failed to fetch user info');
             }
           } catch (error) {
             console.error('Failed to complete OAuth authentication:', error);
@@ -77,14 +78,14 @@ const AppContent: React.FC = () => {
           window.history.replaceState({}, document.title, window.location.pathname);
         } else {
           // No OAuth parameters, try to restore existing authentication
-          console.log('No OAuth parameters, attempting to restore authentication');
+          console.log('No OAuth parameters, attempting to restore authentication from storage...');
           const restoredAuth = await restoreAuth();
           
           if (restoredAuth.isAuthenticated) {
-            console.log('Authentication restored successfully');
+            console.log('Authentication restored successfully from storage');
             setAuth(restoredAuth);
           } else {
-            console.log('No valid authentication found');
+            console.log('No valid authentication found in storage');
           }
         }
       } catch (error) {
