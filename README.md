@@ -31,13 +31,24 @@ _Clean and intuitive landing page with OAuth integration_
 
 _Feature-rich dashboard for message composition and management_
 
-## 📽 Demo Video
+## 📽️ Demo Video
 
-> Watch SlackConnect Scheduler in action: instant & scheduled Slack messaging.
+> Watch SlackConnect Scheduler in action — instant & scheduled Slack messaging.
 
-[![Watch the demo](https://img.youtube.com/vi/abc123xyz/0.jpg)](https://youtu.be/B4d1fZqNpOA)
+<p align="center">
+  <a href="https://youtu.be/B4d1fZqNpOA" target="_blank">
+    <img src="https://img.youtube.com/vi/B4d1fZqNpOA/hqdefault.jpg" 
+         alt="Slack Connect Demo" width="600">
+  </a>
+</p>
 
-_Complete workflow demonstration from OAuth connection to message scheduling_
+<p align="center">
+  <a href="https://youtu.be/B4d1fZqNpOA" target="_blank">
+    <img src="https://img.shields.io/badge/Watch%20Demo%20on%20YouTube-FF0000?style=for-the-badge&logo=youtube&logoColor=white" alt="Watch on YouTube">
+  </a>
+</p>
+
+*🎬 Complete workflow demonstration from OAuth connection to message scheduling.*
 
 ## </div>
 
